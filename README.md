@@ -18,15 +18,22 @@ The goal is to understand how PHP works internally (CLI vs Browser), how data fl
 
 ## Topics Covered
 
-- PHP syntax and execution model  
-- Variables, data types, and strings  
-- Conditions, arrays, and loops  
-- Functions and reusable logic  
-- Superglobals (`$argv`, `$_GET`, `$_POST`, `$_SERVER`)  
-- Dynamic input handling  
-- Input validation and XSS prevention  
-- File handling and logging  
-- File uploads using `$_FILES`  
+- PHP syntax and execution model
+- Variables, data types, and strings
+- Conditions, arrays, and loops
+- Functions and reusable logic
+- Superglobals (`$argv`, `$_GET`, `$_POST`, `$_SERVER`, `$_FILES`)
+- CLI vs Browser input handling
+- Input validation and XSS prevention
+- File handling (read, write, append, logging with timestamps)
+- File uploads (basic flow)
+- Secure file uploads
+  - File size validation
+  - Extension allow/block lists
+  - MIME type validation using `finfo`
+  - Safe file renaming
+  - Blocking executable uploads
+  - Secure upload directory handling
 
 ---
 
@@ -49,6 +56,9 @@ Open in browser:
 http://localhost:8000/php-basics/filename.php
 ```
 
+> ⚠️ PHP files must be served via the PHP server.  
+> Static servers (like Live Server) cannot handle POST or file uploads.
+
 ---
 
 ## Repository Structure
@@ -67,14 +77,18 @@ php-basics/
 ├── 10_validation.php
 ├── 11_file_handling.php
 ├── 12_file_uploads.php
+├── 13_secure_uploads.php
 ├── data.txt
 ├── log.txt
+├── notes.txt
 └── uploads/
 ```
 
 ---
 
-## Status
+## Current Status
 
-🟢 Actively learning and updating.  
-Next step: **Laravel fundamentals**.
+🟢 PHP fundamentals completed, including secure file handling and uploads.
+
+Next step: **Laravel fundamentals**  
+(following the same principle: understand first, abstract later).
