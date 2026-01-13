@@ -561,3 +561,12 @@ SECURITY MENTAL MODEL
 - Use safely
 - Escape before output
 ----------------------------------------------------------------
+SUMMARY
+-GET = request data
+-POST = send data
+-Uploads = POST only
+-Refresh after POST = danger
+-Redirect fixes POST problems
+-Headers control flow
+-PHP just reacts to HTTP
+----------------------------------------------------------------
