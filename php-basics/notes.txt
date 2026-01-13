@@ -279,7 +279,7 @@ SECURITY MENTAL MODEL
 - Use safely
 - Escape before output
 ----------------------------------------------------------------
-```// filepath: d:\Pranav\Codeft\Learn PHP\php-basics\notes.txt
+
 PHP FUNDAMENTALS – NOTES (UP TO MIXED ARRAYS)
 Date: 01/08/2026
 ----------------------------------------------------------------
@@ -557,16 +557,82 @@ IMPORTANT SECURITY RULE
 SECURITY MENTAL MODEL
 - Receive input
 - Check existence
-- Check validity
-- Use safely
-- Escape before output
 ----------------------------------------------------------------
 SUMMARY
--GET = request data
--POST = send data
--Uploads = POST only
--Refresh after POST = danger
--Redirect fixes POST problems
--Headers control flow
--PHP just reacts to HTTP
+- GET: request data
+- POST: send data
+- Uploads: POST only
+- Avoid refreshing after POST; use redirect (PRG pattern) to prevent duplicate actions
+- Headers control response flow
 ----------------------------------------------------------------
+
+SESSIONS
+- Without sessions: each request is independent (data is lost on refresh)
+- With sessions: data persists across requests via a server-side store and session ID
+- Start a session with `session_start()` and store data in `$_SESSION`
+----------------------------------------------------------------
+
+SESSION FLASH MESSAGES
+- Use to show data once and then remove it:
+  - Set: `$_SESSION['error'] = 'Message';`
+  - Read & clear: `$error = $_SESSION['error'] ?? ''; unset($_SESSION['error']);`
+- `unset()` removes a variable or array key entirely (different from setting to null)
+----------------------------------------------------------------
+
+HTTP REQUEST FLOW — GET vs POST
+- HTTP is stateless; each request is independent
+- GET: parameters in URL, safe to refresh and bookmark
+- POST: data in request body, not safe to refresh
+----------------------------------------------------------------
+
+PRG: POST → REDIRECT → GET
+- Process POST, then `header('Location: page.php'); exit;` to initiate a new GET request
+- Always send `header()` before any output and call `exit` after redirect
+----------------------------------------------------------------
+
+HEADERS IN PHP (quick rules)
+- `header('Location: page.php')` — redirect
+- `header('Content-Type: text/html')` — set content type
+- Headers must be sent before any output
+----------------------------------------------------------------
+
+PASSWORD HASHING & AUTH
+- Never store plaintext passwords
+- Use `password_hash()` to create a secure hash and `password_verify()` to check it:
+  - `$hash = password_hash($password, PASSWORD_DEFAULT);`
+  - `if (password_verify($inputPassword, $hash)) { /* ok */ }`
+- Do NOT use fast hashes (md5, sha1, sha256) for passwords
+----------------------------------------------------------------
+
+AUTH FLOW (LOGIN)
+- User submits login form (POST)
+- Verify username exists and password with `password_verify()`
+- On success: set `$_SESSION['username'] = $username` and redirect to a GET page
+- Logout: `session_destroy()`
+----------------------------------------------------------------
+
+PHP IN HTML (SERVER-SIDE RENDERING)
+- PHP runs on the server; the browser receives generated HTML
+- Use `<?= $variable ?>` as shorthand for `<?php echo $variable ?>`
+- Alternative syntax (e.g., `<?php if (cond): ?>...<?php endif; ?>`) helps when mixing logic and templates
+----------------------------------------------------------------
+
+RUNNING PHP FILES
+- CLI: `php filename.php` (no HTTP, no sessions by default)
+- Built-in server: `php -S localhost:8000` and open `http://localhost:8000/file.php`
+- Do NOT use Live Server for PHP
+----------------------------------------------------------------
+
+COMMON MISTAKES
+- Forgetting to redirect after POST (no PRG)
+- Missing `session_start()`
+- Not validating or escaping inputs
+- Refreshing POST responses (duplicate actions)
+- Storing clear-text passwords
+----------------------------------------------------------------
+
+FINAL CORE TAKEAWAYS
+- HTTP is stateless; use sessions for persistence
+- Always redirect after POST to avoid duplicate actions
+- Hash and verify passwords correctly (`password_hash` / `password_verify`)
+- Validate inputs and escape output (`htmlspecialchars`) when rendering
