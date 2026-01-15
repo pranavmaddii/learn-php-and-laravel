@@ -636,3 +636,130 @@ FINAL CORE TAKEAWAYS
 - Always redirect after POST to avoid duplicate actions
 - Hash and verify passwords correctly (`password_hash` / `password_verify`)
 - Validate inputs and escape output (`htmlspecialchars`) when rendering
+----------------------------------------------------------------
+
+Date: 01/16/2026
+----------------------------------------------------------------
+
+17. PROTECTED ROUTES (ACCESS CONTROL)
+- Protected route means: A page that should only be accessible to logged-in users.
+- Implementation logic: Check authentication at the very top of the file.
+- Do NOT render HTML before the check.
+- Redirect unauthenticated users.
+- Core check:
+  if (!isset($_SESSION['username'])) {
+    redirect to login
+    exit
+  }
+- Important points:
+  - Protection is server-side.
+  - Links alone do not protect pages.
+  - exit after redirect is mandatory.
+  - This is manual middleware logic.
+  - Frameworks later centralize this logic, but behavior is the same.
+----------------------------------------------------------------
+
+18. REGISTRATION / SIGNUP FLOW
+- Registration means: Creating a new user securely.
+- Hashing password before storage.
+- In this phase: No database is used.
+- User data is simulated using session storage.
+- User storage: $_SESSION['users'] = [];
+- Each user stored as: username => hashed_password
+- Registration flow:
+  - User submits signup form (POST).
+  - Input is validated (not empty).
+  - Check if username already exists.
+  - Password is hashed using password_hash().
+  - User is stored.
+  - Success message is set in session.
+  - Redirect happens.
+  - GET request renders page.
+----------------------------------------------------------------
+
+19. SESSION AS STORAGE
+- $_SESSION is just an array.
+- Examples:
+  - $_SESSION['users']
+  - $_SESSION['username']
+  - $_SESSION['error']
+  - $_SESSION['success']
+- These are NOT built-in.
+- They are user-defined keys.
+- PHP does not care about the key names.
+- You choose the names and their meaning.
+----------------------------------------------------------------
+
+20. FLASH MESSAGES (ERROR / SUCCESS)
+- Flash message = message shown once, then removed.
+- Pattern:
+  $_SESSION['error'] = "Error message";
+  On next request:
+  $error = $_SESSION['error'] ?? '';
+  unset($_SESSION['error']);
+- Purpose:
+  - Show feedback once.
+  - Prevent message repeating on refresh.
+  - Same logic applies to success messages.
+----------------------------------------------------------------
+
+21. unset() FUNCTION
+- unset() completely removes a variable or array key.
+- Difference:
+  - unset($x) → variable removed
+  - $x = null → variable exists with null value
+  - $x = '' → variable exists with empty string
+- Used for:
+  - Flash messages.
+  - Temporary session data.
+  - Cleaning up session state.
+----------------------------------------------------------------
+
+22. PASSWORD HASHING RULES
+- Passwords must NEVER be stored in plain text.
+- Correct functions:
+  - password_hash()
+  - password_verify()
+- Hashing properties:
+  - One-way.
+  - Cannot be reversed.
+  - Same password gives different hash each time.
+  - Includes salt automatically.
+- Do NOT use:
+  - md5()
+  - sha1()
+  - sha256()
+- Hashing is NOT encryption.
+----------------------------------------------------------------
+
+23. POST → REDIRECT → GET (PRG PATTERN)
+- After any POST that changes state: Always redirect.
+- Never stay on POST.
+- Why:
+  - Prevent duplicate actions.
+  - Prevent form resubmission.
+  - Make refresh safe.
+- PHP implementation:
+  header("Location: page.php");
+  exit;
+----------------------------------------------------------------
+
+24. PHP INSIDE HTML (SERVER-SIDE RENDERING)
+- PHP runs first on server.
+- HTML is sent to browser after PHP finishes.
+- Alternative PHP syntax:
+  <?php if (condition): ?>
+    HTML
+  <?php endif; ?>
+- Purpose:
+  - Clean mixing of logic and HTML.
+  - PHP decides which HTML exists.
+  - Browser never sees PHP code.
+----------------------------------------------------------------
+
+25. SESSION KEY TAKEAWAYS
+- $_SESSION is just an array.
+- You define the keys.
+- Session data survives refresh and redirect.
+- Session represents authentication state.
+- Flash messages are temporary session values.
