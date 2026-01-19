@@ -1,0 +1,140 @@
+# PHP DATABASE & AUTHENTICATION — NOTES
+
+## 1. WHY WE MOVED FROM PHP-BASICS TO PHP-DATABASE
+- PHP basics explain how code runs
+- Real applications need persistent data
+- Arrays and sessions are temporary
+- Databases provide permanent storage
+- Database-backed authentication is required before Laravel
+
+## 2. DATABASE FUNDAMENTALS
+- Database = structured, persistent storage
+- Table = collection of rows
+- Row = one record (e.g., a user)
+- Column = one attribute (email, password, etc.)
+- Database is the SOURCE OF TRUTH
+- Sessions are NOT a source of truth
+
+## 3. PDO (PHP DATA OBJECTS)
+- PDO is PHP's database abstraction layer
+- Works with MySQL, PostgreSQL, SQLite, etc.
+- PDO responsibilities:
+  - Create DB connection
+  - Prepare and execute SQL
+  - Return results as PHP arrays
+
+**Key PDO concepts:**
+- DSN (mysql:host=...;dbname=...;charset=utf8mb4)
+- Error mode: PDO::ERRMODE_EXCEPTION
+- Disable emulated prepares for security
+
+## 4. PDO VS PDOSTATEMENT
+- PDO:
+  - Manages database connection
+  - Prepares or executes SQL
+- PDOStatement:
+  - Represents ONE executed query
+  - Holds a cursor to DB results
+  - Fetches rows
+
+**Execution flow:**
+PDO -> prepare/query -> PDOStatement -> execute -> fetch
+
+## 5. PREPARED STATEMENTS (MOST IMPORTANT)
+- Purpose: Prevent SQL Injection
+- SQL structure and user data are sent separately
+- Two phases:
+  1. PREPARE -> SQL structure is locked
+  2. EXECUTE -> data is safely bound
+
+**Rules:**
+- NEVER mix user input directly into SQL
+- ALWAYS use prepare() + execute()
+- User input can NEVER become SQL logic
+
+## 6. INSERTING USERS INTO DATABASE
+- Passwords must NEVER be stored in plain text
+- Always hash passwords using password_hash()
+- Use prepared statements for INSERT
+- lastInsertId() returns the new user's ID
+- Database schema enforces constraints (e.g., unique email)
+
+## 7. LOGIN USING DATABASE (STEP 06)
+- Authentication = verifying credentials
+- Steps:
+  1. Fetch user by email
+  2. If user not found -> fail
+  3. Verify password using password_verify()
+- This step does NOT remember the user
+- Login success lasts only for one request
+
+## 8. SESSIONS & LOGIN PERSISTENCE (STEP 07)
+- HTTP is stateless -> PHP forgets everything after response
+- Sessions allow server-side memory across requests
+- After successful login:
+  - Regenerate session ID
+  - Store ONLY user_id in session
+
+**Rules:**
+- Store user_id only, not full user data
+- Never store passwords in sessions
+
+## 9. SESSION FIXATION ATTACKS
+- Attacker forces or predicts a session ID BEFORE login
+- Victim logs in
+- Attacker reuses the same session ID
+- Result: account hijacking without password
+
+**Prevention:**
+- Always call session_regenerate_id(true) after login
+- Privilege increase = regenerate session ID
+
+## 10. AUTHORIZATION & PROTECTED ROUTES (STEP 08)
+- Authentication = who you are
+- Authorization = what you can access
+- A user is logged in if:
+  isset($_SESSION['user_id'])
+
+**auth.php responsibilities:**
+- Start session
+- Block unauthenticated users (requireAuth)
+- Fetch current user from DB (currentUser)
+- Database remains source of truth
+
+**Protected pages:**
+- Call requireAuth() BEFORE page logic
+- Unauthorized users are blocked immediately
+
+## 11. WHY WE DID ALL THIS
+- To understand how real websites work internally
+- To remove "magic" from Laravel authentication
+- Laravel auth uses the SAME logic, abstracted
+- You are not expected to rewrite this in Laravel
+
+## 12. PROJECT STATUS
+- php-basics: COMPLETED
+- php-database: COMPLETED
+- Full database-backed authentication built in raw PHP
+- This code is now a REFERENCE FOUNDATION
+
+## 13. KEY MENTAL MODELS
+- Authentication: "Are you who you say you are?"
+- Session: "Stay logged in"
+- Authorization: "Are you allowed here?"
+- Database = truth
+- Session = identity reference
+- Frameworks abstract, not replace fundamentals
+
+## 14. WHAT'S NEXT
+- Transition to Laravel 10
+- Learn routes, controllers, Eloquent
+- Map raw PHP auth to Laravel auth
+- Same principle:
+  Understand first. Abstract later.
+
+## FINAL NOTE
+Feeling confused or tired here is NORMAL.
+This was deep backend work.
+You did exactly what was required.
+
+---
