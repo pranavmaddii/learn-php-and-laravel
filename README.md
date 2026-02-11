@@ -2,7 +2,7 @@
 
 This repository documents my journey of learning **PHP backend development from first principles** and then transitioning into **Laravel**, with a strong emphasis on correctness, security, and understanding real backend behavior before using frameworks.
 
-The goal is **not just to “use PHP/Laravel”**, but to understand:
+The goal is **not just to "use PHP/Laravel"**, but to understand:
 - how PHP executes (CLI vs browser),
 - how HTTP requests work,
 - how sessions persist state,
@@ -13,11 +13,11 @@ The goal is **not just to “use PHP/Laravel”**, but to understand:
 
 ## Learning Philosophy
 
-- Fundamentals before frameworks  
-- One concept per file  
-- One concept per commit  
-- No blind copy-paste  
-- Security and correctness from day one  
+- Fundamentals before frameworks
+- One concept per file
+- One concept per commit
+- No blind copy-paste
+- Security and correctness from day one
 
 Frameworks are treated as **abstractions over known mechanisms**, not magic.
 
@@ -25,7 +25,7 @@ Frameworks are treated as **abstractions over known mechanisms**, not magic.
 
 ## Topics Covered
 
-### Core PHP Fundamentals
+### Core PHP Fundamentals (`php-basics/`)
 - PHP execution model (CLI vs browser)
 - Variables, data types, strings
 - Conditions, arrays, loops
@@ -54,7 +54,7 @@ Frameworks are treated as **abstractions over known mechanisms**, not magic.
 
 ---
 
-## Database & Authentication (PHP + MySQL)
+## Database & Authentication (`php-database/`)
 
 The `php-database` module completes a **full database-backed authentication system using raw PHP**.
 
@@ -86,9 +86,62 @@ This mirrors how real frameworks implement authentication internally.
 
 ---
 
+## PHP 8 Features (`php-8 features/`)
+
+Exploration of modern PHP 8+ language features and patterns, bridging raw PHP knowledge with the constructs used in Laravel and modern frameworks.
+
+- Match expressions
+- Named arguments
+- Nullsafe operator (`?->`)
+- Constructor property promotion
+- Union and intersection types
+- Readonly properties and classes
+- Enums (backed enums)
+- Constants in traits
+- Attributes (annotations)
+- WeakMaps
+- Fibers (cooperative multitasking)
+- Closures and arrow functions
+- Closures in a Laravel-style router
+- Method chaining
+- Dependency injection
+
+---
+
+## Postboard — Laravel Project (`postboard/`)
+
+A full-stack **Laravel application** built to apply the fundamentals learned in the raw PHP modules. This is a post board where users can create, read, edit, and delete posts — with authentication, comments, likes, and an API layer.
+
+### Features
+- **Authentication**: Registration, login, logout, password reset via email
+- **Posts**: Full CRUD with soft deletes and restore
+- **Comments**: Threaded comments on posts
+- **Likes**: Toggle like/unlike on posts
+- **Image uploads**: Attach images to posts
+- **Post status**: Active/draft post management
+- **My Posts**: View own posts separately
+- **API**: RESTful API endpoints with Sanctum token authentication
+
+### Tech Stack
+- Laravel (Blade templates, Eloquent ORM, Sanctum)
+- MySQL
+- Blade views with layouts
+
+### Key Laravel Concepts Applied
+- Routes → Controllers (`PostController`, `AuthController`, `CommentController`)
+- PDO → Eloquent ORM (`Post`, `User`, `Comment` models)
+- `auth.php` → Laravel `auth:sanctum` middleware
+- Manual sessions → Laravel session management
+- Raw SQL → Migrations and schema builder
+- API authentication using Laravel Sanctum
+
+---
+
 ## Running the Code
 
-### Using XAMPP / Apache (Recommended)
+### PHP Basics & Database Modules
+
+#### Using XAMPP / Apache (Recommended)
 
 Place the repository inside:
 
@@ -98,11 +151,7 @@ http://localhost/LEARN%20PHP/php-basics/filename.php
 http://localhost/LEARN%20PHP/php-database/filename.php
 ```
 
----
-
-## Running the Code
-
-### CLI (Command Line)
+#### CLI (Command Line)
 
 Used for `$argv`, `STDIN`, and logic-only scripts:
 
@@ -110,7 +159,7 @@ Used for `$argv`, `STDIN`, and logic-only scripts:
 php filename.php
 ```
 
-### Browser (Built-in PHP Server)
+#### Browser (Built-in PHP Server)
 Used for `$_GET`, `$_POST`, and `$_FILES`:
 ```
 php -S localhost:8000
@@ -121,8 +170,21 @@ Open in browser:
 http://localhost:8000/php-basics/filename.php
 ```
 
-> ⚠️ PHP files must be served via the PHP server.  
+> ⚠️ PHP files must be served via the PHP server.
 > Static servers (like Live Server) cannot handle POST or file uploads.
+
+### Postboard (Laravel)
+
+```bash
+cd postboard
+composer install
+cp .env.example .env
+php artisan key:generate
+php artisan migrate
+php artisan serve
+```
+
+Open in browser: `http://localhost:8000`
 
 ---
 
@@ -165,10 +227,34 @@ LEARN PHP/
 │   ├── 06_login_user.php
 │   ├── 07_session_auth.php
 │   ├── 08_protected_page.php
-│   └── auth.php
+│   ├── auth.php
+│   └── notes.txt
+│
+├── php-8 features/
+│   └── index.php
+│
+├── postboard/            ← Laravel application
+│   ├── app/
+│   │   ├── Http/Controllers/
+│   │   │   ├── AuthController.php
+│   │   │   ├── PostController.php
+│   │   │   ├── CommentController.php
+│   │   │   └── Api/
+│   │   └── Models/
+│   │       ├── User.php
+│   │       ├── Post.php
+│   │       └── Comment.php
+│   ├── database/migrations/
+│   ├── resources/views/
+│   │   ├── layouts/
+│   │   ├── auth/
+│   │   └── posts/
+│   ├── routes/
+│   │   ├── web.php
+│   │   └── api.php
+│   └── ...
 │
 └── README.md
-
 ```
 
 ---
@@ -177,25 +263,24 @@ LEARN PHP/
 
 🟢 **Completed**
 
-- Core PHP backend fundamentals  
-- Secure file handling and uploads  
-- HTTP request lifecycle understanding  
-- Session-based authentication and authorization  
-- Database-backed authentication using PDO  
+- Core PHP backend fundamentals
+- Secure file handling and uploads
+- HTTP request lifecycle understanding
+- Session-based authentication and authorization
+- Database-backed authentication using PDO
+- PHP 8 modern language features
+- Laravel project (Postboard) with full CRUD, auth, comments, likes, and API
 
-The **`php-database` module is complete** and serves as a foundation reference.
+🟡 **In Progress**
+
+- Expanding the Postboard Laravel project with additional features
 
 ---
 
-## Next Step
+## Learning Progression
 
-➡️ **Transition to Laravel 10**, mapping:
-
-- Routes → Controllers  
-- PDO → Eloquent ORM  
-- `auth.php` → Laravel auth middleware and guards  
-- Manual sessions → Laravel session management  
-
-With the same principle:
+```
+PHP Basics → Database & Auth (Raw PHP) → PHP 8 Features → Laravel (Postboard)
+```
 
 > **Understand first. Abstract later.**
