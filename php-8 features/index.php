@@ -43,6 +43,13 @@ class Service{
         return "Service is doing something.";
     }
 }
+
+class FacadeForService{
+    public static function __callStatic($method, $args){
+        return (new Service())->$method(...$args);
+    }
+}
+
 echo FacadeForService::doSomething();
 return;
 MethodsChaining:
@@ -289,30 +296,31 @@ function process((Countable & Iterator) | string $input){
         echo "Count: ".$input->count()."\n";
     }
 }
-process(2);
+process("hello");
 return;
 // Union Types
 
-class Example{
+class UnionTypeExample{
     public function foo(string | int | array |float $arg): string | int | array | float {
         return $arg  * 2;
         return $arg;
     }
 }
 
-// print_r((new Example)->foo([1,2,3])); // This will cause a TypeError
-print_r((new Example)->foo(2.52));
+// print_r((new UnionTypeExample)->foo([1,2,3])); // This will cause a TypeError
+print_r((new UnionTypeExample)->foo(2.52));
 return;
 // Constructor Property Promotion
 
-class User{
+class PromotedUser{
     public function __construct(
         public string $name,
         public int $age,
     ){}
 }
 
-// class User{
+// Without promotion:
+// class PromotedUser{
 //     public $name;
 //     public $age;
 //     public function __construct($name, $age){
@@ -321,13 +329,13 @@ class User{
 //     }
 // }
 
-$user = new User('Alice', 25);
+$user = new PromotedUser('Alice', 25);
 echo "Name: {$user->name}, Age: {$user->age}";
 
 return;
 // Nullsafe Operator
 
-class User{
+class NullsafeUser{
     public function address(){
         // return new Address();
         return null;
@@ -338,7 +346,7 @@ class Address{
         return 'USA';
     }
 }
-$user = new User();
+$user = new NullsafeUser();
 echo $user?->address()?->country()?? 'homeless';
 
 return;
